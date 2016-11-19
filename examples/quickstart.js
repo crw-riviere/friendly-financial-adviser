@@ -12,11 +12,12 @@ try {
 }
 
 const accessToken = (() => {
-  if (process.argv.length !== 3) {
-    console.log('usage: node examples/quickstart.js <wit-access-token>');
-    process.exit(1);
-  }
-  return process.argv[2];
+  // if (process.argv.length !== 3) {
+  //   console.log('usage: node examples/quickstart.js <wit-access-token>');
+  //   process.exit(1);
+  // }
+  // return process.argv[2];
+  return "4L2APS7VUXE77KC7LZZ4MN32XQWW3ORT";
 })();
 
 // Quickstart example
@@ -57,6 +58,15 @@ const actions = {
       return resolve(context);
     });
   },
+     getSpendings({context,entities}){
+       delete context.currentBalance;
+        return new Promise(function(resolve, reject) {
+      var spendingCategory = firstEntityValue(entities, 'search_query')
+      
+      context.spendings = '$12121 on '+spendingCategory;
+      return resolve(context);
+    });
+  },   
 };
 
 const client = new Wit({accessToken, actions});
