@@ -59,9 +59,8 @@ const actions = {
     });
   },
      getSpendings({context,entities}){
-       delete context.currentBalance;
         return new Promise(function(resolve, reject) {
-      var spendingCategory = firstEntityValue(entities, 'search_query')
+      var spendingCategory = firstEntityValue(entities, 'spendingCategory')
       
       context.spendings = '$12121 on '+spendingCategory;
       return resolve(context);
