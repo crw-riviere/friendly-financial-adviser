@@ -133,29 +133,122 @@ const actions = {
     }
   },
   getBalance({context, entities}) {
-    return new Promise(function(resolve, reject) {
-      // var location = firstEntityValue(entities, 'location')
-      // if (location) {
-      //   context.forecast = 'sunny in ' + location; // we should call a weather API here
-      //   delete context.missingLocation;
-      // } else {
-      //   context.missingLocation = true;
-      //   delete context.forecast;
-      // }
-      context.currentBalance = '12000';
+    return new Promise(function (resolve, reject) {
+      mondo['balance'](accountId, accessTokenMondo, function (error, value) {
+        if (!error) {
+          context.currentBalance = value.balance;
+          return resolve(context);
+        }
+        else {
+          console.log(error);
+        }
+      });
+    });
+  },
+   getSpending({context, entities}) {
+    delete context.currentBalance;
+    return new Promise(function (resolve, reject) {
+      var spendingCategory = firstEntityValue(entities, 'search_query')
+
+      context.spendings = '$12121 on ' + spendingCategory;
       return resolve(context);
     });
   },
-   getSpendings({context,entities}){
-        return new Promise(function(resolve, reject) {
-      var spendingCategory = firstEntityValue(entities, 'spendingCategory')
-      
-      context.spendings = '$12121 on '+spendingCategory;
+  getBiggestSpending({context, entities}) {
+    delete context.currentBalance;
+    return new Promise(function (resolve, reject) {
+
+      var param = {
+        account_id: accountId,
+        since: '2016-10-01T23:00:00Z'
+      };
+
+      function groupTransactions(transactionsResponse) {
+
+        var categories = [];
+        var transactions = transactionsResponse.transactions;
+
+        for (var i = 0; i < transactions.length; i++) {
+
+          var transactionCategory = transactions[i]["category"];
+          var transactionAmount = transactions[i]["amount"];
+          if (categories[transactionCategory] == undefined) {
+            categories[transactionCategory] = 0;
+          }
+          categories[transactionCategory] += transactionAmount;
+        }
+
+        console.log(categories);
+        return categories;
+      };
+
+      function poundify(whole_penny_amount) {
+        return 0 - (whole_penny_amount / 100);
+      }
+
+      function sortCategories(categories) {
+        var result = [];
+        for (var category in categories.sort()) {
+          var objCategory = {
+            "name": category,
+            "amount": categories[category]
+          }
+          console.log(objCategory);
+          result.push(objCategory);
+        }
+
+        console.log(result);
+        return result;
+      };
+
+      mondo['transactions'](param, accessTokenMondo, function (error, value) {
+        if (!error) {
+          console.log("done fetching transactions");
+          var topSpendingCategories = groupTransactions(value);
+
+          var sorted = sortCategories(topSpendingCategories);
+
+
+          var categoryRankRequested = 0
+          if (categoryRankRequested == undefined) {
+            categoryRankRequested = 0;
+          }
+
+          context.spendings = "You have spent £" + poundify(sorted[categoryRankRequested].amount) + " on " + sorted[categoryRankRequested].name + " this month.";
+          return resolve(context);
+
+
+        }
+        else {
+          console.log(error);
+
+        }
+      });
+
+
+
+    });
+  },
+    setBudget({context, entities}){
+    return new Promise(function(resolve, reject) {
+      console.log(entities)
+      var budgetType = entities.search_query[0].value;
+      var budgetLimit = entities.number[0].value;
+
+      store.put(budgetType, budgetLimit);
+
       return resolve(context);
     });
-  },   
-  // You should implement your custom actions here
-  // See https://wit.ai/docs/quickstart
+
+
+  },
+  getBudget({context, entities}) {
+    return new Promise(function(resolve, reject) {
+      var budget = store.get(entities.search_query[0].value);
+      context.budgetSpend = budget;
+      return resolve(context);
+    });
+  },
 };
 
 // Setting up our bot
