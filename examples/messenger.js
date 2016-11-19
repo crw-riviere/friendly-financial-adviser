@@ -34,12 +34,12 @@ try {
 const PORT = process.env.PORT || 8445;
 
 // Wit.ai parameters
-const WIT_TOKEN = process.env.WIT_TOKEN;
+const WIT_TOKEN =  "4L2APS7VUXE77KC7LZZ4MN32XQWW3ORT";
 
 // Messenger API parameters
-const FB_PAGE_TOKEN = process.env.FB_PAGE_TOKEN;
+const FB_PAGE_TOKEN =  "EAAZAZAZAnPRdxwBANYF2HfQftU100dwPEHIc4BAvSLQUEUGM5XeSKnZAvY7w7ENQZBGZAv2EzYL5ZAeNlOQzfDpG73NJZBHzoRCVHMdafaCqoOcta7CsK2Mqx6yy9881SrTmFEvImBiUrp7CWvBFO5qbZBFrtFfm1lfZAqBQt991X0ZCAZDZD";
 if (!FB_PAGE_TOKEN) { throw new Error('missing FB_PAGE_TOKEN') }
-const FB_APP_SECRET = process.env.FB_APP_SECRET;
+const FB_APP_SECRET =  "27ddc988a36cce305fdec513c6a918a8";
 if (!FB_APP_SECRET) { throw new Error('missing FB_APP_SECRET') }
 
 let FB_VERIFY_TOKEN = null;
@@ -125,6 +125,20 @@ const actions = {
       // Giving the wheel back to our bot
       return Promise.resolve()
     }
+  },
+  getBalance({context, entities}) {
+    return new Promise(function(resolve, reject) {
+      // var location = firstEntityValue(entities, 'location')
+      // if (location) {
+      //   context.forecast = 'sunny in ' + location; // we should call a weather API here
+      //   delete context.missingLocation;
+      // } else {
+      //   context.missingLocation = true;
+      //   delete context.forecast;
+      // }
+      context.currentBalance = '12000';
+      return resolve(context);
+    });
   },
   // You should implement your custom actions here
   // See https://wit.ai/docs/quickstart
