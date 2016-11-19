@@ -126,7 +126,7 @@ const actions = {
 
           var sorted = sortCategories(topSpendingCategories);
 
-         
+
           var categoryRankRequested = 0
           if (categoryRankRequested == undefined) {
             categoryRankRequested = 0;

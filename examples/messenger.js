@@ -33,6 +33,12 @@ try {
 // Webserver parameter
 const PORT = process.env.PORT || 8445;
 
+var mondo = require('mondo-bank');
+
+var accountId = 'acc_000096SQdfcdJriLPzqSgL';
+var accessTokenMondo = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaSI6Im9hdXRoY2xpZW50XzAwMDA5NFB2SU5ER3pUM2s2dHo4anAiLCJleHAiOjE0Nzk1NjQ3MTMsImlhdCI6MTQ3OTU0MzExMywianRpIjoidG9rXzAwMDA5RVZPUms4bFJyRlBOb2dudHgiLCJ1aSI6InVzZXJfMDAwMDk2RzlLZWswTERhMmpkaUdCZCIsInYiOiIyIn0.ajA-eZanjqogkmbE1-0mY-g-n-_nsymaVfxRk_5memI';
+
+
 // Wit.ai parameters
 const WIT_TOKEN =  "4L2APS7VUXE77KC7LZZ4MN32XQWW3ORT";
 
@@ -178,6 +184,35 @@ app.get('/webhook', (req, res) => {
     res.sendStatus(400);
   }
 });
+
+
+app.post('/monzowebhook', (req,res) => {
+  //  var queryString = req.url.substring(req.url.indexOf("?") + 1, req.url.length);
+  //   var queryStringParsed = qs.parse(queryString);
+
+    // console.log(queryStringParsed);
+    var transaction = req.body.data;
+console.log(transaction);
+
+    var params = {
+        account_id: accountId,
+        params: {
+            title: `Slavo, You've exceded your budget!`,
+            body: `You spent ${transaction.amount} at ${transaction.description} which has pushed you over your budget`,
+            image_url: 'http://downloadicons.net/sites/default/files/alert-icon-54871.png'
+        },
+        url: 'www.google.co.uk'
+    };
+
+    mondo.createFeedItem(params, accessTokenMondo).then(function (error, value) {
+        res.end("OK");
+    })
+    .catch(function (error) {
+        console.log(error);
+        res.end("Error");
+    });
+});
+
 
 // Message handler
 app.post('/webhook', (req, res) => {
