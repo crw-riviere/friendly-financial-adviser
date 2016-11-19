@@ -18,6 +18,7 @@ const crypto = require('crypto');
 const express = require('express');
 const fetch = require('node-fetch');
 const request = require('request');
+var storage = require('node-storage');
 
 let Wit = null;
 let log = null;
@@ -37,7 +38,10 @@ var mondo = require('mondo-bank');
 
 var accountId = 'acc_000096SQdfcdJriLPzqSgL';
 var accessTokenMondo = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaSI6Im9hdXRoY2xpZW50XzAwMDA5NFB2SU5ER3pUM2s2dHo4anAiLCJleHAiOjE0Nzk1NjQ3MTMsImlhdCI6MTQ3OTU0MzExMywianRpIjoidG9rXzAwMDA5RVZPUms4bFJyRlBOb2dudHgiLCJ1aSI6InVzZXJfMDAwMDk2RzlLZWswTERhMmpkaUdCZCIsInYiOiIyIn0.ajA-eZanjqogkmbE1-0mY-g-n-_nsymaVfxRk_5memI';
+var PATH_TO_STORAGE = "budgets"
 
+var store = new storage(PATH_TO_STORAGE);
+store.put("testItem", 1000);
 
 // Wit.ai parameters
 const WIT_TOKEN =  "4L2APS7VUXE77KC7LZZ4MN32XQWW3ORT";
